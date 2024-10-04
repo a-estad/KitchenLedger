@@ -3,8 +3,29 @@
 {% block title %}Front Page{% endblock %}
 
 {% block content %}
+
 <div class="text-center">
-    <h1>Welcome to the Front Page</h1>
-    <p>This page is only accessible to logged-in users.</p>
+    <h1>Køkken 200</h1>
+    <p>Velkommen {{ user.resident.name }}</p>
 </div>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Room</th>
+        <th>Name</th>
+        <th>Debt</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for resident in residents %}
+    <tr>
+        <td>{{ resident.room_number }}</td>
+        <td>{{ resident.name }}</td>
+        <td>{{ resident.total_debt }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

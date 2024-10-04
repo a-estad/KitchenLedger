@@ -7,7 +7,7 @@ from .models import *
 @receiver(post_save, sender=Expense)
 def create_debt_and_credit_for_expense(sender, instance, **kwargs):
     creditor = instance.paid_by
-    Credit.objects.create(user=creditor, expense=instance, amount=instance.cost)
+    Credit.objects.create(resident=creditor, expense=instance, amount=instance.cost)
 
     if instance.is_dinner_club:
         dinner_club_for_expense = DinnerClub.objects.get(expense=instance.id)
@@ -17,10 +17,10 @@ def create_debt_and_credit_for_expense(sender, instance, **kwargs):
         debtors = Resident.objects.all()
 
     for debtor in debtors:
-        Debt.objects.create(user=debtor, expense=instance, amount=instance.cost / len(debtors))
+        Debt.objects.create(resident=debtor, expense=instance, amount=instance.cost / len(debtors))
 
 
-@receiver(post_save, sender=Deposit)
+@receiver(post_save, sender=Payment)
 @receiver(post_save, sender=Credit)
 @receiver(post_save, sender=Debt)
 def update_total_debt_for_resident(sender, instance, **kwargs):

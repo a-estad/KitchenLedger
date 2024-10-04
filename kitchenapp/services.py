@@ -4,7 +4,8 @@ from .models import *
 
 
 def recalculate_total_debt_for_resident(resident):
-    debt = resident.debt_set.aggregate(Sum("amount", default=0.0))
-    credit = resident.credit_set.aggregate(Sum("amount", default=0.0))
-    deposit = resident.deposit_set.aggregate(Sum("amount", default=0.0))
-    resident.total_debt = debt - credit - deposit
+    debt = resident.debt_set.aggregate(total=Sum("amount", default=0.0)).get('total')
+    credit = resident.credit_set.aggregate(total=Sum("amount", default=0.0)).get('total')
+    payment = resident.payment_set.aggregate(total=Sum("amount", default=0.0)).get('total')
+    resident.total_debt = debt - credit - payment
+    resident.save()

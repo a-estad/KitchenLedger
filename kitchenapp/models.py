@@ -56,7 +56,7 @@ class Credit(models.Model):
         return f"{self.resident.name} paid {self.amount} for {self.expense}"
 
 
-class Deposit(models.Model):
+class Payment(models.Model):
     resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
     date = models.DateField()
     amount = models.FloatField()
