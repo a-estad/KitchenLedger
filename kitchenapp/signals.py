@@ -24,4 +24,4 @@ def create_debt_and_credit_for_expense(sender, instance, **kwargs):
 @receiver(post_save, sender=Credit)
 @receiver(post_save, sender=Debt)
 def update_total_debt_for_resident(sender, instance, **kwargs):
-    recalculate_total_debt_for_resident(instance.resident)
+    recalculate_balance_for_resident(instance.resident)

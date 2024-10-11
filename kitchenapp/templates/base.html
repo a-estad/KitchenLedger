@@ -12,19 +12,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <!-- Left side of the navbar -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <button class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-                    Residents
-                </button>
-            </li>
-        </ul>
-
-        <!-- Center the brand -->
-        <a class="navbar-brand mx-auto" href="{% url 'front page' %}">Kitchen Ledger</a>
-
-        <!-- Right side of the navbar -->
+        <a class="navbar-brand" href="{% url 'front page' %}">Kitchen Ledger</a>
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
             <li class="nav-item">
@@ -49,28 +37,39 @@
     </div>
 </nav>
 
-<!-- Sidebar (offcanvas) -->
-<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Residents</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <ul class="list-unstyled">
-            {% for resident in request.user.residents %}
-            <li class="mb-2">
-                <a href="{% url 'resident_profile' resident.id %}" class="text-white">{{ resident.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
 <!-- Main content area -->
-<div class="container mt-5">
-    {% block content %}
-    <!-- This is where content from other templates will be injected -->
-    {% endblock %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2" style="position: fixed; top: 57px; bottom: 0; left: 0; background-color: #37485b; color: #212529; padding: 5px;">
+<!--            <ul class="dropdown-menu show" aria-labelledby="dropdownMenuButton">-->
+<!--                {% for resident in residents %}-->
+<!--                <li>-->
+<!--                    <a class="dropdown-item" href="{% url 'resident profile page' resident.id %}">-->
+<!--                        {{ resident.room_number }} - {{ resident.name }}-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                {% endfor %}-->
+<!--            </ul>-->
+
+            <ul class="list-group list-group-flush">
+                {% for resident in residents %}
+                <li class="list-group-item bg-transparent">
+                    <a style="text-decoration: none; color: #ffffff" href="{% url 'resident profile page' resident.id %}"> {{ resident.room_number }} - {{ resident.name }} </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-9 offset-md-2">
+            <div class="p-5 center">
+                {% block content %}
+                <!-- This is where content from other templates will be injected -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bootstrap 5 JS and dependencies (Popper.js) -->

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Resident Profile{% endblock %}
+
+{% block content %}
+
+<div class="text">
+    <h1> {{ resident.room_number }} - {{ resident.name }} </h1>
+    <h3> History </h3>
+</div>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Date</th>
+        <th>Event</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for date, event in history %}
+    <tr>
+        <td>{{ date }}</td>
+        <td>{{ event }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

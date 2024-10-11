@@ -4,12 +4,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Resident, Expense, Debt
 from .forms import ExpenseForm
+from .services import create_history_for_resident
 
 
 @login_required
 def front_page(request):
     residents = Resident.objects.all()
     return render(request, "front_page.html", {'residents': residents})
+
 
 def data_tables(request):
     all_expenses = Expense.objects.all()
@@ -32,10 +34,10 @@ def data_tables(request):
 
     return render(request, "data_tables.html", {'form': form, 'expenses': all_expenses, 'debts': all_debts})
 
-# def resident_page(request):
-#     resident = Resident.objects.get(user=request.user)
-#     return render(request, 'resident_page.html', {'resident': resident})
-#
-#
-# def accounting(request):
-#     return HttpResponse("You are at the accounting page.")
+
+def resident_profile(request, resident_id):
+    resident_for_profile = Resident.objects.get(pk=resident_id)
+
+    history_table = sorted(create_history_for_resident(resident_for_profile), reverse=True)
+
+    return render(request, "resident_profile.html", {'resident': resident_for_profile, 'history': history_table})
