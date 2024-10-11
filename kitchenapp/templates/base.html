@@ -1,58 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}Kitchen Ledger{% endblock %}</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Kitchen Ledger{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">Kitchen Ledger</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'data tables page' %}">Data</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'front page' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;">
-              Logout
-            </button>
-          </form>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <button type="submit" class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;">
-              Login
-            </button>
-          </form>
-        </li>
-        {% endif %}
-      </ul>
+    <div class="container-fluid">
+        <!-- Left side of the navbar -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <button class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                    Residents
+                </button>
+            </li>
+        </ul>
+
+        <!-- Center the brand -->
+        <a class="navbar-brand mx-auto" href="{% url 'front page' %}">Kitchen Ledger</a>
+
+        <!-- Right side of the navbar -->
+        <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;">
+                        Logout
+                    </button>
+                </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link text-light" style="text-decoration: none; color: inherit;">
+                        Login
+                    </button>
+                </form>
+            </li>
+            {% endif %}
+        </ul>
     </div>
-  </div>
 </nav>
+
+<!-- Sidebar (offcanvas) -->
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Residents</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="list-unstyled">
+            {% for resident in request.user.residents %}
+            <li class="mb-2">
+                <a href="{% url 'resident_profile' resident.id %}" class="text-white">{{ resident.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 <!-- Main content area -->
 <div class="container mt-5">
-  {% block content %}
-  <!-- This is where content from other templates will be injected -->
-  {% endblock %}
+    {% block content %}
+    <!-- This is where content from other templates will be injected -->
+    {% endblock %}
 </div>
 
 <!-- Bootstrap 5 JS and dependencies (Popper.js) -->
