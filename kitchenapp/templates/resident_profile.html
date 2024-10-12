@@ -6,7 +6,13 @@
 
 <div class="text">
     <h1> {{ resident.room_number }} - {{ resident.name }} </h1>
-    <h3> History </h3>
+    <h4 class="text-left">
+        History
+        <span style="float:right">
+            Balance: {{ resident.balance }}
+        </span>
+    </h4>
+
 </div>
 
 <table class="table table-striped">

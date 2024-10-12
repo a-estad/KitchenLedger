@@ -59,12 +59,17 @@
 
         .arrow-indicator {
             font-size: 16px;
-            transition: transform 0.3s ease; /* Smooth transition */
+            transition: transform 0.2s ease; /* Smooth transition */
         }
 
         /* Rotate the arrow when expanded */
         .rotate-arrow {
             transform: rotate(90deg);
+        }
+
+        /* Custom class to highlight the selected row with light blue background */
+        .table-active-custom {
+            background-color: #dbe6f8 !important; /* Light blue background */
         }
     </style>
 </head>
@@ -100,6 +105,7 @@
 <!-- Main layout -->
 <div class="container-fluid">
     <div class="content-wrapper">
+        {% if user.is_authenticated %}
         <!-- Sidebar -->
         <div class="col-md-3 col-lg-2 bg-light sidebar">
             <!-- Sidebar content -->
@@ -119,7 +125,7 @@
                         </svg>
                     </span>
                 </a>
-                <div id="activeProfiles" class="collapse show">
+                <div id="activeProfiles" class="collapse sidebar-collapse show">
                     <ul class="list-unstyled ps-3">
                         {% for resident in residents %}
                         <li><a href="{% url 'resident profile page' resident.id %}" class="sidebar-item text-decoration-none">{{ resident.room_number }} - {{ resident.name }}</a></li>
@@ -141,7 +147,7 @@
                         </svg>
                     </span>
                 </a>
-                <div id="inactiveProfiles" class="collapse">
+                <div id="inactiveProfiles" class="collapse sidebar-collapse">
                     <ul class="list-unstyled ps-3">
                         <li><a class="sidebar-item text-decoration-none">No inactive residents</a></li>
                     </ul>
@@ -161,14 +167,14 @@
                         </svg>
                     </span>
                 </a>
-                <div id="datatables" class="collapse">
+                <div id="datatables" class="collapse sidebar-collapse">
                     <ul class="list-unstyled ps-3">
                         <li><a href="{% url 'data tables page' %}" class="sidebar-item text-decoration-none">Tables</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-
+        {% endif %}
         <!-- Main content area -->
         <div class="col-md-9 col-lg-10 main-content">
             {% block content %}
@@ -192,11 +198,11 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         // Retrieve and apply saved state from localStorage
-        document.querySelectorAll('.collapse').forEach(function (element) {
+        document.querySelectorAll('.sidebar-collapse').forEach(function (element) {
             const id = element.id;
             const storedState = localStorage.getItem(id);
             const link = document.querySelector(`[href="#${element.id}"]`);
-            const arrow = link.querySelector('.arrow-indicator svg');
+            const arrow = link.querySelector('.arrow-indicator');
 
             // Apply saved state: if collapsed, hide; if expanded, show
             if (storedState === 'shown') {
