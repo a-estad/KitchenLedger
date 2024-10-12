@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'kitchenapp/base.html' %}
 
 {% block title %}Data{% endblock %}
 
@@ -8,12 +8,28 @@
     <h1>Data</h1>
 </div>
 
-<div class="text">
-    <h4>Expenses</h4>
+<!-- Heading and Date Filter Inputs in one row -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Expenses Heading (left aligned, same line) -->
+    <div class="text">
+        <h4 class="mb-0">Expenses</h4>
+    </div>
+
+    <!-- Date Filter Inputs (right aligned, same line) -->
+    <div class="d-flex">
+        <div class="me-2">
+            <label for="dateFrom" class="form-label"></label>
+            <input type="date" id="dateFrom" class="form-control date-filter-from" data-table="expensesTable" placeholder="DD-MM-YYYY">
+        </div>
+        <div>
+            <label for="dateTo" class="form-label"></label>
+            <input type="date" id="dateTo" class="form-control date-filter-to" data-table="expensesTable" placeholder="DD-MM-YYYY">
+        </div>
+    </div>
 </div>
 
 <!-- Expenses Table -->
-<table class="table table-striped table-hover" id="expensesTable">
+<table class="table table-striped table-hover with-date-filter" id="expensesTable" data-table="expensesTable">
     <thead class="table-dark">
     <tr>
         <th>Date</th>
@@ -26,7 +42,7 @@
     {% if expenses %}
     {% for expense in expenses %}
     <tr data-id="{{ expense.id }}" data-creator="{{ expense.paid_by.id }}" data-modifier="{{ resident.id }}">
-        <td>{{ expense.date }}</td>
+        <td class="date">{{ expense.date }}</td>
         <td>{{ expense.paid_by }}</td>
         <td>{{ expense.cost }}</td>
         <td>{{ expense.description }}</td>
@@ -41,14 +57,19 @@
 </table>
 
 <!-- Add Expense and Delete buttons -->
-<div style="padding-bottom: 30px">
+<div class="d-flex justify-content-between" style="padding-bottom: 30px;">
+    <!-- Left-aligned Add Expense button -->
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
         Add expense
     </button>
-    <form method="post">
+
+    <!-- Right-aligned Delete button inside a form -->
+    <form method="post" class="d-inline">
         {% csrf_token %}
         <input type="hidden" name="expense_id_delete" id="hiddenExpenseId">
-        <button id="deleteButton" type="submit" class="btn btn-danger ms-2" style="display: none;">Delete selected</button>
+        <button id="deleteButton" type="submit" class="btn btn-danger" style="display: none;">
+            Delete selected
+        </button>
     </form>
 </div>
 
@@ -81,32 +102,37 @@
 </div>
 
 <!-- Debts Table -->
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Date</th>
-        <th>Resident</th>
-        <th>Amount</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% if debts %}
-    {% for debt in debts %}
-    <tr>
-        <td>{{ debt.expense.date }}</td>
-        <td>{{ debt.resident }}</td>
-        <td>{{ debt.amount }}</td>
-        <td>{{ debt.expense.description }}</td>
-    </tr>
-    {% endfor %}
-    {% else %}
-    <tr>
-        <td colspan="4">No data available</td>
-    </tr>
-    {% endif %}
-    </tbody>
-</table>
+<div class="scroll-table">
+    <table class="table table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Resident</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if debts %}
+        {% for debt in debts %}
+        <tr>
+            <td>{{ debt.expense.date }}</td>
+            <td>{{ debt.resident }}</td>
+            <td>{{ debt.amount }}</td>
+            <td>{{ debt.expense.description }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No data available</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% load static %}
+<script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
 
 <!-- JavaScript to handle row click events -->
 <script>
@@ -152,7 +178,5 @@
         });
     });
 </script>
-
-
 
 {% endblock %}

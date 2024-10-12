@@ -1,0 +1,54 @@
+{% extends 'kitchenapp/base.html' %}
+
+{% block title %}Resident Profile{% endblock %}
+
+{% block content %}
+
+<div class="text">
+    <h1 class="mb-4"> {{ resident.room_number }} - {{ resident.name }} </h1>
+    <h4 class="text-left">
+        History
+        <span style="float:right">
+            Balance: {{ resident.balance }}
+        </span>
+    </h4>
+
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <label hidden for="residentHistoryTableSearch"></label>
+    <input class="form-control search-filter me-2" id="residentHistoryTableSearch" type="text" data-table="residentHistoryTable" placeholder="Search..">
+    <div class="me-2">
+        <label hidden for="dateFromResidentHistory" class="form-label"></label>
+        <input type="date" id="dateFromResidentHistory" class="form-control date-filter-from" data-table="residentHistoryTable">
+    </div>
+    <div>
+        <label hidden for="dateToResidentHistory" class="form-label"></label>
+        <input type="date" id="dateToResidentHistory" class="form-control date-filter-to" data-table="residentHistoryTable">
+    </div>
+</div>
+
+<div class="scroll-table">
+    <table class="table table-striped with-date-filter with-search-filter" data-table="residentHistoryTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Event</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for date, event in history %}
+        <tr>
+            <td class="date">{{ date }}</td>
+            <td>{{ event }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% load static %}
+<script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
+<script src="{% static 'kitchenapp/js/searchFilterScript.js' %}"></script>
+
+{% endblock %}

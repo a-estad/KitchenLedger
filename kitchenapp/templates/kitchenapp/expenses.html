@@ -1,0 +1,145 @@
+{% extends 'kitchenapp/base.html' %}
+
+{% block title %}Data{% endblock %}
+
+{% block content %}
+
+<div class="text mb-3">
+    <h1>Expenses</h1>
+</div>
+
+<!-- Date Filter Inputs -->
+<div class="d-flex justify-content-end mb-3">
+    <label hidden for="expensesTableSearch"></label>
+    <input class="form-control search-filter me-2" id="expensesTableSearch" type="text" data-table="expensesTable" placeholder="Search..">
+    <div class="me-2">
+        <label hidden for="dateFrom" class="form-label"></label>
+        <input type="date" id="dateFrom" class="form-control date-filter-from" data-table="expensesTable">
+    </div>
+    <div>
+        <label hidden for="dateTo" class="form-label"></label>
+        <input type="date" id="dateTo" class="form-control date-filter-to" data-table="expensesTable">
+    </div>
+</div>
+
+<!-- Expenses Table -->
+<div class="scroll-table">
+    <table class="table table-striped table-hover with-date-filter with-search-filter" id="expensesTable" data-table="expensesTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Paid by</th>
+            <th>Cost</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if expenses %}
+        {% for expense in expenses %}
+        <tr data-id="{{ expense.id }}" data-creator="{{ expense.paid_by.id }}" data-modifier="{{ resident.id }}">
+            <td class="date">{{ expense.date }}</td>
+            <td>{{ expense.paid_by }}</td>
+            <td>{{ expense.cost }}</td>
+            <td>{{ expense.description }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No data available</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Expense and Delete buttons -->
+<div class="d-flex justify-content-between" style="padding-bottom: 30px;">
+    <!-- Left-aligned Add Expense button -->
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
+        Add expense
+    </button>
+
+    <!-- Right-aligned Delete button inside a form -->
+    <form method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="expense_id_delete" id="hiddenExpenseId">
+        <button id="deleteButton" type="submit" class="btn btn-danger" style="display: none;">
+            Delete selected
+        </button>
+    </form>
+</div>
+
+<!-- Add Expense Form -->
+<div class="collapse" id="addExpenseCollapse" style="padding-bottom: 20px">
+    <div class="card card-body bg-light">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col">
+                    <label for="dateInput" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" id="dateInput">
+                </div>
+                <div class="col">
+                    <label for="costInput" class="form-label">Cost</label>
+                    <input type="number" name="cost" class="form-control" id="costInput">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Description</label>
+                <input type="text" name="description" class="form-control" id="descriptionInput">
+            </div>
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% load static %}
+<script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
+<script src="{% static 'kitchenapp/js/searchFilterScript.js' %}"></script>
+
+<!-- JavaScript to handle row click events -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('expensesTable');
+        const deleteButton = document.getElementById('deleteButton');
+        let selectedRow = null;
+
+        // Add click event listeners to each table row
+        table.querySelectorAll('tbody tr').forEach(function(row) {
+            row.addEventListener('click', function() {
+
+                if (row.getAttribute('data-creator') === row.getAttribute('data-modifier')) {
+                    // If the clicked row is already selected, deselect it
+                    if (selectedRow === row) {
+                        row.classList.remove('table-active-custom'); // Deselect the row
+                        selectedRow = null; // Reset selectedRow
+                        deleteButton.style.display = 'none'; // Hide the delete button
+                    } else {
+                        // Remove active class from the previously selected row, if any
+                        if (selectedRow) {
+                            selectedRow.classList.remove('table-active-custom');
+                        }
+
+                        // Set the clicked row as the selected one
+                        row.classList.add('table-active-custom');
+                        selectedRow = row;
+
+                        // Show the delete button
+                        deleteButton.style.display = 'inline-block';
+
+                        // Store the selected expense ID
+                        const selectedExpenseId = row.getAttribute('data-id');
+
+                        // Update the delete button to know which expense to delete
+                        deleteButton.setAttribute('value', selectedExpenseId);
+
+                        document.getElementById('hiddenExpenseId').value = selectedExpenseId
+
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

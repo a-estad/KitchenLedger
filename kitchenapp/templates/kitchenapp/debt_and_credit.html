@@ -1,0 +1,108 @@
+{% extends 'kitchenapp/base.html' %}
+
+{% block title %}Data{% endblock %}
+
+{% block content %}
+
+<div class="text">
+    <h1 class="mb-3">Debt</h1>
+</div>
+
+<!-- Filter Inputs Debt Table -->
+<div class="d-flex justify-content-end mb-3">
+    <label hidden for="debtsTableSearch"></label>
+    <input class="form-control search-filter me-2" id="debtsTableSearch" type="text" data-table="debtsTable" placeholder="Search..">
+    <div class="me-2">
+        <label hidden for="dateFromDebt" class="form-label"></label>
+        <input type="date" id="dateFromDebt" class="form-control date-filter-from" data-table="debtsTable">
+    </div>
+    <div>
+        <label hidden for="dateToDebt" class="form-label"></label>
+        <input type="date" id="dateToDebt" class="form-control date-filter-to" data-table="debtsTable">
+    </div>
+</div>
+
+<!-- Debts Table -->
+<div class="scroll-table">
+    <table class="table table-striped with-date-filter with-search-filter" data-table="debtsTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Resident</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if debts %}
+        {% for debt in debts %}
+        <tr>
+            <td class="date">{{ debt.expense.date }}</td>
+            <td>{{ debt.resident }}</td>
+            <td>{{ debt.amount }}</td>
+            <td>{{ debt.expense.description }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No data available</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+
+<div class="text">
+    <h1 class="mb-3">Credit</h1>
+</div>
+
+<!-- Filter Inputs Credit Table -->
+<div class="d-flex justify-content-end mb-3">
+    <label hidden for="creditsTableSearch"></label>
+    <input class="form-control search-filter me-2" id="creditsTableSearch" type="text" data-table="creditsTable" placeholder="Search..">
+    <div class="me-2">
+        <label hidden for="dateFromCredit" class="form-label"></label>
+        <input type="date" id="dateFromCredit" class="form-control date-filter-from" data-table="creditsTable">
+    </div>
+    <div>
+        <label hidden for="dateToCredit" class="form-label"></label>
+        <input type="date" id="dateToCredit" class="form-control date-filter-to" data-table="creditsTable">
+    </div>
+</div>
+
+<!-- Credit Table -->
+<div class="scroll-table">
+    <table class="table table-striped with-date-filter with-search-filter" data-table="creditsTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Resident</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if credits %}
+        {% for credit in credits %}
+        <tr>
+            <td class="date">{{ credit.expense.date }}</td>
+            <td>{{ credit.resident }}</td>
+            <td>{{ credit.amount }}</td>
+            <td>{{ credit.expense.description }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No data available</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% load static %}
+<script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
+<script src="{% static 'kitchenapp/js/searchFilterScript.js' %}"></script>
+
+{% endblock %}
