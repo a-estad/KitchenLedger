@@ -7,6 +7,66 @@
     <title>{% block title %}Kitchen Ledger{% endblock %}</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Sidebar item styling */
+        .sidebar-item {
+            padding: 6px 12px;
+            display: block;
+            color: #333;
+            border-radius: 5px;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item.active {
+            background-color: #dde8fa;
+            font-weight: bold;
+        }
+
+        .sidebar-category {
+            margin-bottom: 5px !important;
+            font-weight: bold;
+            cursor: pointer;
+            color: #212529;
+            font-size: large;
+        }
+
+        .sidebar-category:hover {
+            background-color: #e8e8e8;
+            border-radius: 5px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            min-height: 100vh; /* Ensure full height of the viewport */
+        }
+
+        .sidebar {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-right: 1px solid #ddd;
+            min-height: 100vh; /* Ensure the sidebar stretches to full height */
+        }
+
+        .main-content {
+            flex-grow: 1; /* Main content should take up remaining space */
+            padding: 30px;
+        }
+
+        .arrow-indicator {
+            font-size: 16px;
+            transition: transform 0.3s ease; /* Smooth transition */
+        }
+
+        /* Rotate the arrow when expanded */
+        .rotate-arrow {
+            transform: rotate(90deg);
+        }
+    </style>
 </head>
 <body>
 <!-- Navbar -->
@@ -37,37 +97,83 @@
     </div>
 </nav>
 
-<!-- Main content area -->
+<!-- Main layout -->
 <div class="container-fluid">
-    <div class="row">
+    <div class="content-wrapper">
         <!-- Sidebar -->
-        <div class="col-md-2" style="position: fixed; top: 57px; bottom: 0; left: 0; background-color: #37485b; color: #212529; padding: 5px;">
-<!--            <ul class="dropdown-menu show" aria-labelledby="dropdownMenuButton">-->
-<!--                {% for resident in residents %}-->
-<!--                <li>-->
-<!--                    <a class="dropdown-item" href="{% url 'resident profile page' resident.id %}">-->
-<!--                        {{ resident.room_number }} - {{ resident.name }}-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                {% endfor %}-->
-<!--            </ul>-->
+        <div class="col-md-3 col-lg-2 bg-light sidebar">
+            <!-- Sidebar content -->
+            <div class="d-flex flex-column">
+                <!-- Active User Profiles -->
+                <a href="#activeProfiles" class="d-flex align-items-center mb-3 p-2 sidebar-category text-decoration-none" data-bs-toggle="collapse" aria-expanded="true">
+                    <span class="me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-person" viewBox="0 0 20 20">
+                          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                        </svg>
+                    </span>
+                    Active residents
+                    <span class="ms-auto arrow-indicator">
+                        <!-- Set all arrows to caret-right by default -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+                            <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
+                        </svg>
+                    </span>
+                </a>
+                <div id="activeProfiles" class="collapse show">
+                    <ul class="list-unstyled ps-3">
+                        {% for resident in residents %}
+                        <li><a href="{% url 'resident profile page' resident.id %}" class="sidebar-item text-decoration-none">{{ resident.room_number }} - {{ resident.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-            <ul class="list-group list-group-flush">
-                {% for resident in residents %}
-                <li class="list-group-item bg-transparent">
-                    <a style="text-decoration: none; color: #ffffff" href="{% url 'resident profile page' resident.id %}"> {{ resident.room_number }} - {{ resident.name }} </a>
-                </li>
-                {% endfor %}
-            </ul>
+                <!-- Inactive User Profiles -->
+                <a href="#inactiveProfiles" class="d-flex align-items-center mb-3 p-2 sidebar-category text-decoration-none" data-bs-toggle="collapse" aria-expanded="false">
+                    <span class="me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-archive" viewBox="0 0 20 20">
+                          <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                        </svg>
+                    </span>
+                    Inactive residents
+                    <span class="ms-auto arrow-indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+                          <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
+                        </svg>
+                    </span>
+                </a>
+                <div id="inactiveProfiles" class="collapse">
+                    <ul class="list-unstyled ps-3">
+                        <li><a class="sidebar-item text-decoration-none">No inactive residents</a></li>
+                    </ul>
+                </div>
+
+                <!-- Datatables -->
+                <a href="#datatables" class="d-flex align-items-center mb-3 p-2 sidebar-category text-decoration-none" data-bs-toggle="collapse" aria-expanded="false">
+                    <span class="me-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 20 20">
+                          <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                        </svg>
+                    </span>
+                    Data
+                    <span class="ms-auto arrow-indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+                          <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
+                        </svg>
+                    </span>
+                </a>
+                <div id="datatables" class="collapse">
+                    <ul class="list-unstyled ps-3">
+                        <li><a href="{% url 'data tables page' %}" class="sidebar-item text-decoration-none">Tables</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <!-- Main content -->
-        <div class="col-md-9 offset-md-2">
-            <div class="p-5 center">
-                {% block content %}
-                <!-- This is where content from other templates will be injected -->
-                {% endblock %}
-            </div>
+        <!-- Main content area -->
+        <div class="col-md-9 col-lg-10 main-content">
+            {% block content %}
+            <!-- Main content will be inserted here -->
+            {% endblock %}
         </div>
     </div>
 </div>
@@ -75,5 +181,46 @@
 <!-- Bootstrap 5 JS and dependencies (Popper.js) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<script>
+    // Highlight the active sidebar item based on URL
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        if (window.location.href.includes(item.getAttribute('href'))) {
+            item.classList.add('active');
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Retrieve and apply saved state from localStorage
+        document.querySelectorAll('.collapse').forEach(function (element) {
+            const id = element.id;
+            const storedState = localStorage.getItem(id);
+            const link = document.querySelector(`[href="#${element.id}"]`);
+            const arrow = link.querySelector('.arrow-indicator svg');
+
+            // Apply saved state: if collapsed, hide; if expanded, show
+            if (storedState === 'shown') {
+                element.classList.add('show'); // Ensure it stays expanded
+                arrow.classList.add('rotate-arrow'); // Rotate arrow to down
+            } else {
+                element.classList.remove('show'); // Ensure it stays collapsed
+                arrow.classList.remove('rotate-arrow'); // Reset arrow to right
+            }
+
+            // Save the state when the collapse is toggled
+            element.addEventListener('shown.bs.collapse', function () {
+                localStorage.setItem(id, 'shown');
+                arrow.classList.add('rotate-arrow'); // Rotate arrow to down
+            });
+
+            element.addEventListener('hidden.bs.collapse', function () {
+                localStorage.setItem(id, 'hidden');
+                arrow.classList.remove('rotate-arrow'); // Rotate arrow back to right
+            });
+        });
+    });
+</script>
 </body>
 </html>
+
+
