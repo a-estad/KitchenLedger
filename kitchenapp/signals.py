@@ -9,12 +9,14 @@ def create_debt_and_credit_for_expense(sender, instance, **kwargs):
     creditor = instance.paid_by
     Credit.objects.create(resident=creditor, expense=instance, amount=instance.cost)
 
+    residents = Resident.objects.filter(move_in_date__lt=instance.date).filter(move_out_date__gt=instance.date)
+
     if instance.is_dinner_club:
         dinner_club_for_expense = DinnerClub.objects.get(expense=instance.id)
-        dinner_club_participants = DinnerClubParticipant.objects.get(dinner_club=dinner_club_for_expense)
-        debtors = Resident.objects.filter(id__in=dinner_club_participants)
+        dinner_club_participants = DinnerClubParticipant.objects.filter(dinner_club=dinner_club_for_expense)
+        debtors = residents.filter(id__in=dinner_club_participants)
     else:
-        debtors = Resident.objects.all()
+        debtors = residents
 
     for debtor in debtors:
         Debt.objects.create(resident=debtor, expense=instance, amount=instance.cost / len(debtors))

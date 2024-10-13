@@ -9,23 +9,4 @@
     <p>Velkommen {{ user.resident.name }}</p>
 </div>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Room</th>
-        <th>Name</th>
-        <th>Balance</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for resident in residents %}
-    <tr>
-        <td>{{ resident.room_number }}</td>
-        <td>{{ resident.name }}</td>
-        <td>{{ resident.balance }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
 {% endblock %}
