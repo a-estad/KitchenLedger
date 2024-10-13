@@ -3,6 +3,33 @@ from .signals import *
 from .models import *
 
 
+def create_debt_and_credit_for_expense(expense):
+    creditor = expense.paid_by
+    Credit.objects.create(resident=creditor, expense=expense, amount=expense.cost)
+
+    residents = Resident.objects.filter(move_in_date__lt=expense.date).filter(move_out_date__gt=expense.date)
+
+    if expense.is_dinner_club:
+        dinner_club = DinnerClub.objects.get(expense=expense)
+        dinner_club_participants = DinnerClubParticipant.objects.filter(dinner_club=dinner_club)
+        debtors = [dinner_club_participant.resident for dinner_club_participant in dinner_club_participants]
+    else:
+        debtors = residents
+
+    for debtor in debtors:
+        Debt.objects.create(resident=debtor, expense=expense, amount=expense.cost / len(debtors))
+
+    for resident in residents:
+        recalculate_balance_for_resident(resident)
+
+
+def recalculate_debt_and_credit_for_expense(expense):
+    Debt.objects.filter(expense=expense).delete()
+    Credit.objects.filter(expense=expense).delete()
+
+    create_debt_and_credit_for_expense(expense)
+
+
 def recalculate_balance_for_resident(resident):
     debt = resident.debt_set.aggregate(total=Sum("amount", default=0.0)).get('total')
     credit = resident.credit_set.aggregate(total=Sum("amount", default=0.0)).get('total')

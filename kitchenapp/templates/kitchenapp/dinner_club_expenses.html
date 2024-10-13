@@ -1,0 +1,141 @@
+{% extends 'kitchenapp/base.html' %}
+
+{% block title %}Dinner Clubs Page{% endblock %}
+
+{% block content %}
+
+<div class="text mb-3">
+    <h1>Dinner clubs</h1>
+</div>
+
+<!-- Date Filter Inputs -->
+<div class="d-flex justify-content-end mb-3">
+    <label hidden for="dinnerClubsTableSearch"></label>
+    <input class="form-control search-filter me-2" id="dinnerClubsTableSearch" type="text" data-table="dinnerClubsTable" placeholder="Search..">
+    <div class="me-2">
+        <label hidden for="dateFrom" class="form-label"></label>
+        <input type="date" id="dateFrom" class="form-control date-filter-from" data-table="dinnerClubsTable">
+    </div>
+    <div>
+        <label hidden for="dateTo" class="form-label"></label>
+        <input type="date" id="dateTo" class="form-control date-filter-to" data-table="dinnerClubsTable">
+    </div>
+</div>
+
+<!-- Dinner Club Expenses Table -->
+<div class="scroll-table">
+    <table class="table table-striped table-hover with-date-filter with-search-filter" id="dinnerClubsTable" data-table="dinnerClubsTable">
+        <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Paid by</th>
+            <th>Cost</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if dinner_club_expenses %}
+        {% for dinner_club_expense in dinner_club_expenses %}
+        <tr data-bs-toggle="collapse" data-bs-target="#dinnerClubCollapse-{{ dinner_club_expense.id }} " class="data" data-id="{{ dinner_club_expense.id }}" data-creator="{{ dinner_club_expense.paid_by.id }}" data-modifier="{{ resident.id }}">
+            <td class="date">{{ dinner_club_expense.date }}</td>
+            <td class="paid_by">{{ dinner_club_expense.paid_by }}</td>
+            <td class="cost">{{ dinner_club_expense.cost }}</td>
+            <td class="description">{{ dinner_club_expense.description }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4">No data available</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Dinner Club Expense and Delete buttons -->
+<div class="d-flex justify-content-between" style="padding-bottom: 15px;">
+    <!-- Left-aligned Add Expense button -->
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
+        Add dinner club
+    </button>
+</div>
+
+<!-- Add Expense Form -->
+<div class="collapse" id="addExpenseCollapse" style="padding-bottom: 20px">
+    <div class="card card-body bg-light">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row g-3 mb-3">
+                <div class="col">
+                    <label for="dateInput" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" id="dateInput">
+                </div>
+                <div class="col">
+                    <label for="costInput" class="form-label">Cost</label>
+                    <input type="number" name="cost" class="form-control" id="costInput">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Description</label>
+                <input type="text" name="description" class="form-control" id="descriptionInput">
+            </div>
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% for dinner_club_expense in dinner_club_expenses %}
+<div class="collapse" id="dinnerClubCollapse-{{ dinner_club_expense.id }}">
+    <div class="card card-body bg-light">
+        <div>
+            <h5 style="font-size: large">Dinner club hosted by {{ dinner_club_expense.paid_by.name }}
+                <span style="float:right">{{ dinner_club_expense.date }}</span>
+            </h5>
+            <hr>
+            <div style="padding-left: 20px">
+                <div class="mb-2">
+                    <strong>Cost:</strong>
+                    <span>{{ dinner_club_expense.cost }}</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Description:</strong>
+                    <span>{{ dinner_club_expense.description }}</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Participants:</strong>
+                    <ul>
+                        {% for participant in dinner_club_expense.dinnerclub.dinnerclubparticipant_set.all %}
+                        <li>{{ participant.resident.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex p" style="padding-bottom: 10px;">
+                <form method="post" style="padding-right: 10px">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_remove_participant_from_expense_id" id="hiddenResidentId" value="{{ dinner_club_expense.id }}">
+                    <button id="addOrRemoveParticipant" type="submit" value="{{ dinner_club_expense.id }}" class="btn btn-primary">
+                        Add / remove yourself from participants
+                    </button>
+                </form>
+                {% if resident.id == dinner_club_expense.paid_by.id %}
+                <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="dinner_club_expense_id_delete" id="hiddenDinnerClubExpenseId" value="{{ dinner_club_expense.id }}">
+                    <button id="deleteDinnerClubExpenseButton" type="submit" value="{{ dinner_club_expense.id }}" class="btn btn-danger">
+                        Delete dinner club
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% load static %}
+<script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
+<script src="{% static 'kitchenapp/js/searchFilterScript.js' %}"></script>
+
+{% endblock %}

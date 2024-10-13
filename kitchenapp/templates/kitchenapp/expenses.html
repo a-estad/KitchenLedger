@@ -36,7 +36,7 @@
         <tbody>
         {% if expenses %}
         {% for expense in expenses %}
-        <tr data-id="{{ expense.id }}" data-creator="{{ expense.paid_by.id }}" data-modifier="{{ resident.id }}">
+        <tr class="data" data-id="{{ expense.id }}" data-creator="{{ expense.paid_by.id }}" data-modifier="{{ resident.id }}">
             <td class="date">{{ expense.date }}</td>
             <td>{{ expense.paid_by }}</td>
             <td>{{ expense.cost }}</td>
@@ -53,7 +53,7 @@
 </div>
 
 <!-- Add Expense and Delete buttons -->
-<div class="d-flex justify-content-between" style="padding-bottom: 30px;">
+<div class="d-flex justify-content-between" style="padding-bottom: 10px;">
     <!-- Left-aligned Add Expense button -->
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
         Add expense
@@ -74,7 +74,7 @@
     <div class="card card-body bg-light">
         <form action="" method="post">
             {% csrf_token %}
-            <div class="row g-3">
+            <div class="row g-3 mb-3">
                 <div class="col">
                     <label for="dateInput" class="form-label">Date</label>
                     <input type="date" name="date" class="form-control" id="dateInput">
@@ -105,7 +105,7 @@
         let selectedRow = null;
 
         // Add click event listeners to each table row
-        table.querySelectorAll('tbody tr').forEach(function(row) {
+        table.querySelectorAll('tbody tr.data').forEach(function(row) {
             row.addEventListener('click', function() {
 
                 if (row.getAttribute('data-creator') === row.getAttribute('data-modifier')) {

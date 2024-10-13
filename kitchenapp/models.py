@@ -26,14 +26,14 @@ class Expense(models.Model):
 
 
 class DinnerClub(models.Model):
-    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)
+    expense = models.OneToOneField(Expense, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"DinnerClub at {self.expense.date}"
 
 
 class DinnerClubParticipant(models.Model):
-    dinner_club = models.ForeignKey(DinnerClub, on_delete=models.CASCADE)
+    dinner_club = models.OneToOneField(DinnerClub, on_delete=models.CASCADE)
     resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
 
     def __str__(self):
