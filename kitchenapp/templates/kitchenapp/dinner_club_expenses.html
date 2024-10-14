@@ -8,7 +8,7 @@
     <h1>Dinner clubs</h1>
 </div>
 
-<!-- Date Filter Inputs -->
+<!-- Date And Search Filter Inputs -->
 <div class="d-flex justify-content-end mb-3">
     <label hidden for="dinnerClubsTableSearch"></label>
     <input class="form-control search-filter me-2" id="dinnerClubsTableSearch" type="text" data-table="dinnerClubsTable" placeholder="Search..">
@@ -36,11 +36,11 @@
         <tbody>
         {% if dinner_club_expenses %}
         {% for dinner_club_expense in dinner_club_expenses %}
-        <tr data-bs-toggle="collapse" data-bs-target="#dinnerClubCollapse-{{ dinner_club_expense.id }} " class="data" data-id="{{ dinner_club_expense.id }}" data-creator="{{ dinner_club_expense.paid_by.id }}" data-modifier="{{ resident.id }}">
+        <tr onclick="toggleSelected('{{ dinner_club_expense.id }}')" id="row-{{ dinner_club_expense.id }}" data-bs-toggle="collapse" data-bs-target="#dinnerClubCollapse-{{ dinner_club_expense.id }}">
             <td class="date">{{ dinner_club_expense.date }}</td>
-            <td class="paid_by">{{ dinner_club_expense.paid_by }}</td>
-            <td class="cost">{{ dinner_club_expense.cost }}</td>
-            <td class="description">{{ dinner_club_expense.description }}</td>
+            <td>{{ dinner_club_expense.paid_by }}</td>
+            <td>{{ dinner_club_expense.cost }}</td>
+            <td>{{ dinner_club_expense.description }}</td>
         </tr>
         {% endfor %}
         {% else %}
@@ -52,9 +52,8 @@
     </table>
 </div>
 
-<!-- Add Dinner Club Expense and Delete buttons -->
-<div class="d-flex justify-content-between" style="padding-bottom: 15px;">
-    <!-- Left-aligned Add Expense button -->
+<!-- Add Dinner Club Expense button -->
+<div style="padding-bottom: 15px;">
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
         Add dinner club
     </button>
@@ -137,5 +136,17 @@
 {% load static %}
 <script src="{% static 'kitchenapp/js/dateFilterScript.js' %}"></script>
 <script src="{% static 'kitchenapp/js/searchFilterScript.js' %}"></script>
+
+<script>
+    function toggleSelected(id) {
+        const row = document.getElementById("row-" + id);
+
+        if (row.classList.contains('table-active-custom')) {
+            row.classList.remove('table-active-custom');
+        } else {
+            row.classList.add('table-active-custom');
+        }
+    }
+</script>
 
 {% endblock %}
