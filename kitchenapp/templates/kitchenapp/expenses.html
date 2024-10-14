@@ -8,7 +8,7 @@
     <h1>Expenses</h1>
 </div>
 
-<!-- Date Filter Inputs -->
+<!-- Date And Search Filter Inputs -->
 <div class="d-flex justify-content-end mb-3">
     <label hidden for="expensesTableSearch"></label>
     <input class="form-control search-filter me-2" id="expensesTableSearch" type="text" data-table="expensesTable" placeholder="Search..">
@@ -54,12 +54,10 @@
 
 <!-- Add Expense and Delete buttons -->
 <div class="d-flex justify-content-between" style="padding-bottom: 10px;">
-    <!-- Left-aligned Add Expense button -->
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addExpenseCollapse">
         Add expense
     </button>
 
-    <!-- Right-aligned Delete button inside a form -->
     <form method="post" class="d-inline">
         {% csrf_token %}
         <input type="hidden" name="expense_id_delete" id="hiddenExpenseId">

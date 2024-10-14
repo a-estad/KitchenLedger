@@ -33,7 +33,7 @@ class DinnerClub(models.Model):
 
 
 class DinnerClubParticipant(models.Model):
-    dinner_club = models.OneToOneField(DinnerClub, on_delete=models.CASCADE)
+    dinner_club = models.ForeignKey(DinnerClub, on_delete=models.CASCADE)
     resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
 
     def __str__(self):
