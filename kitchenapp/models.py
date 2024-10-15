@@ -15,7 +15,7 @@ class Resident(models.Model):
 
 
 class Expense(models.Model):
-    paid_by = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
+    paid_by = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each expense belongs to one resident
     date = models.DateField()
     cost = models.FloatField()
     is_dinner_club = models.BooleanField()
@@ -26,7 +26,8 @@ class Expense(models.Model):
 
 
 class DinnerClub(models.Model):
-    expense = models.OneToOneField(Expense, on_delete=models.CASCADE)
+    expense = models.OneToOneField(Expense, on_delete=models.CASCADE)  # Each DinnerClub has one expense
+    participants = models.ManyToManyField(Resident, through='DinnerClubParticipant')  # Many-to-many with residents
 
     def __str__(self):
         return f"DinnerClub at {self.expense.date}"
@@ -41,8 +42,8 @@ class DinnerClubParticipant(models.Model):
 
 
 class Debt(models.Model):
-    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
-    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)
+    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each debt belongs to one resident
+    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)  # Debt references one expense
     amount = models.FloatField()
 
     def __str__(self):
@@ -50,8 +51,8 @@ class Debt(models.Model):
 
 
 class Credit(models.Model):
-    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
-    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)
+    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each credit belongs to one resident
+    expense = models.ForeignKey(Expense, on_delete=models.CASCADE)  # Each credit references one expense
     amount = models.FloatField()
 
     def __str__(self):
@@ -59,7 +60,7 @@ class Credit(models.Model):
 
 
 class Payment(models.Model):
-    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)
+    resident = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each payment belongs to one resident
     date = models.DateField()
     amount = models.FloatField()
     confirmed = models.BooleanField(default=False)

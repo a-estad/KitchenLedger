@@ -44,7 +44,9 @@ def expenses_page(request):
                 create_debt_and_credit_for_expense(expense)
                 return redirect('expenses page')
             else:
-                return render(request, 'kitchenapp/expenses.html', {'form': form})
+                return render(request, 
+                              "kitchenapp/expenses.html",
+                              {'form': form, 'expenses': all_expenses, 'resident': current_user})
     else:
         form = ExpenseForm()
 
