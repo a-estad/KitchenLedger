@@ -70,22 +70,26 @@
 <!-- Add Expense Form -->
 <div class="collapse" id="addExpenseCollapse" style="padding-bottom: 20px">
     <div class="card card-body bg-light">
-        <form action="" method="post">
+        <form method="post">
             {% csrf_token %}
             <div class="row g-3 mb-3">
                 <div class="col">
-                    <label for="dateInput" class="form-label">Date</label>
-                    <input type="date" name="date" class="form-control" id="dateInput">
+                    <label class="form-label">Date</label>
+                    {{ form.date }}
+                    {{ form.date.errors }}
                 </div>
                 <div class="col">
-                    <label for="costInput" class="form-label">Cost</label>
-                    <input type="number" name="cost" class="form-control" id="costInput">
+                    <label class="form-label">Cost</label>
+                    {{ form.cost }}
+                    {{ form.cost.errors }}
                 </div>
             </div>
             <div class="mb-3">
-                <label for="descriptionInput" class="form-label">Description</label>
-                <input type="text" name="description" class="form-control" id="descriptionInput">
+                <label class="form-label">Description</label>
+                {{ form.description }}
+                {{ form.description.errors }}
             </div>
+            {% comment %} {{ form.as_p }} {% endcomment %}
             <button type="submit" class="btn btn-dark">Submit</button>
         </form>
     </div>
@@ -94,50 +98,7 @@
 {% load static %}
 <script src="{% static 'js/dateFilterScript.js' %}"></script>
 <script src="{% static 'js/searchFilterScript.js' %}"></script>
+<script src="{% static 'js/expenseScript.js' %}"></script>
 
-<!-- JavaScript to handle row click events -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const table = document.getElementById('expensesTable');
-        const deleteButton = document.getElementById('deleteButton');
-        let selectedRow = null;
-
-        // Add click event listeners to each table row
-        table.querySelectorAll('tbody tr.data').forEach(function(row) {
-            row.addEventListener('click', function() {
-
-                if (row.getAttribute('data-creator') === row.getAttribute('data-modifier')) {
-                    // If the clicked row is already selected, deselect it
-                    if (selectedRow === row) {
-                        row.classList.remove('table-active-custom'); // Deselect the row
-                        selectedRow = null; // Reset selectedRow
-                        deleteButton.style.display = 'none'; // Hide the delete button
-                    } else {
-                        // Remove active class from the previously selected row, if any
-                        if (selectedRow) {
-                            selectedRow.classList.remove('table-active-custom');
-                        }
-
-                        // Set the clicked row as the selected one
-                        row.classList.add('table-active-custom');
-                        selectedRow = row;
-
-                        // Show the delete button
-                        deleteButton.style.display = 'inline-block';
-
-                        // Store the selected expense ID
-                        const selectedExpenseId = row.getAttribute('data-id');
-
-                        // Update the delete button to know which expense to delete
-                        deleteButton.setAttribute('value', selectedExpenseId);
-
-                        document.getElementById('hiddenExpenseId').value = selectedExpenseId
-
-                    }
-                }
-            });
-        });
-    });
-</script>
 
 {% endblock %}

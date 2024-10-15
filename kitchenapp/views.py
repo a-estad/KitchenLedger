@@ -21,20 +21,18 @@ def overview_page(request):
 
 
 def expenses_page(request):
+    # import pdb; pdb.set_trace()
     all_expenses = sorted(Expense.objects.filter(is_dinner_club=False), key=lambda x: x.date, reverse=True)
     current_user = request.user.resident
 
     if request.method == 'POST':
-
         if 'expense_id_delete' in request.POST:
-            expense_id_delete = request.POST.get('expense_id_delete')
-            Expense.objects.get(pk=expense_id_delete).delete()
-
+            expense_ids = request.POST.get('expense_id_delete').split(',')
+            for expense_id in expense_ids:
+                Expense.objects.get(pk=expense_id).delete()
             return redirect('expenses page')
-
         else:
             form = ExpenseForm(request.POST)
-
             if form.is_valid():
                 expense_input = form.cleaned_data
                 expense = Expense(paid_by=request.user.resident,
@@ -44,9 +42,9 @@ def expenses_page(request):
                                   description=expense_input.get('description'))
                 expense.save()
                 create_debt_and_credit_for_expense(expense)
-
                 return redirect('expenses page')
-
+            else:
+                return render(request, 'kitchenapp/expenses.html', {'form': form})
     else:
         form = ExpenseForm()
 
