@@ -1,6 +1,6 @@
 import React from 'react';
+import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import TestAPI from './components/TestAPI';
 import Sidebar from './components/Sidebar';
 import Expenses from './components/Expense';
 import Residents from './components/Residents';
@@ -8,9 +8,9 @@ import Residents from './components/Residents';
 function App() {
   return (
     <Router>
-      <div style={{ display: 'flex' }}>
+      <div className='root-div'>
         <Sidebar />
-        <div style={{ marginLeft: '200px', padding: '20px', width: '100%' }}>
+        <div className='content-of-pages'>
           <Routes>
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/residents" element={<Residents />} />
