@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const ResidentsList = () => {
+const Residents = () => {
   const [residents, setResidents] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/residents/')
+    // Fetch residents data from the Django API
+    axios.get('http://127.0.0.1:8000/api/residents/')  // Update this URL based on your API
       .then(response => {
         setResidents(response.data);
       })
       .catch(error => {
-        console.error('There was an error fetching the residents!', error);
+        console.error('Error fetching residents:', error);
       });
   }, []);
 
@@ -20,12 +21,12 @@ const ResidentsList = () => {
       <ul>
         {residents.map(resident => (
           <li key={resident.id}>
-            {resident.name} (Room: {resident.room_number})
+            {resident.name} (Room: {resident.room_number}) - Balance: ${resident.balance}
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
-export default ResidentsList;
+export default Residents;
