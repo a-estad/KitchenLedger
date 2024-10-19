@@ -1,0 +1,59 @@
+Table Resident {
+  id int [pk]
+  user_id int [unique, ref: - User.id]  // One-to-one with User
+  name varchar(20)
+  room_number int
+  balance float
+  move_in_date date
+  move_out_date date
+}
+
+Table User {
+  id int [pk]
+  username varchar(100)
+  email varchar(100)
+}
+
+Table Expense {
+  id int [pk]
+  paid_by int [ref: > Resident.id]  // Many-to-one with Resident
+  date date
+  cost float
+  is_dinner_club boolean
+  description varchar(100)
+}
+
+Table DinnerClub {
+  id int [pk]
+  expense_id int [unique, ref: - Expense.id]  // One-to-one with Expense
+}
+
+Table DinnerClubParticipant {
+  dinner_club_id int [ref: > DinnerClub.id]  // Many-to-many with DinnerClub
+  resident_id int [ref: > Resident.id]       // Many-to-many with Resident
+}
+
+Table Debt {
+  id int [pk]
+  resident_id int [ref: > Resident.id]  // Many-to-one with Resident
+  expense_id int [ref: > Expense.id]    // Many-to-one with Expense
+  amount float
+}
+
+Table Credit {
+  id int [pk]
+  resident_id int [ref: > Resident.id]  // Many-to-one with Resident
+  expense_id int [ref: > Expense.id]    // Many-to-one with Expense
+  amount float
+}
+
+Table Payment {
+  id int [pk]
+  resident_id int [ref: > Resident.id]  // Many-to-one with Resident
+  date date
+  amount float
+  confirmed boolean
+}
+
+
+Ref: "Credit"."id" < "Expense"."description"
