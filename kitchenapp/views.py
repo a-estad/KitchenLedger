@@ -1,6 +1,13 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from .models import Resident, Expense, DinnerClub, Debt, Credit, Payment, DinnerClubParticipant
-from .serializers import ResidentSerializer, ExpenseSerializer, DinnerClubSerializer, DebtSerializer, CreditSerializer, PaymentSerializer, DinnerClubParticipantSerializer
+from .serializers import ResidentSerializer, ExpenseSerializer, DinnerClubSerializer, DebtSerializer, CreditSerializer, PaymentSerializer, DinnerClubParticipantSerializer, UserSerializer
+from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
+class CreateUserView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()

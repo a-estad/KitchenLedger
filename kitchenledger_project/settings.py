@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
+from dotenv import load_dotenv # Find out what it does
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +30,22 @@ SECRET_KEY = 'django-insecure-0==d^4zs)r1ex6)kde)y@ae2#_ayk$px%w+w)hl-r4uy-fg^v9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Only for deployment!
+ALLOWED_HOSTS = ["*"]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1), # Find out what it is
+}
 
 # Application definition
 
@@ -142,3 +160,4 @@ LOGOUT_REDIRECT_URL = 'login'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow requests from your React app
 ]
+CORS_ALLOWS_CREDENTIALS = True # Find out what it does
