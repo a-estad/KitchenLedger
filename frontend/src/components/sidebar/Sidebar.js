@@ -7,7 +7,7 @@ const Sidebar = () => {
     <div className="sidebar">
         <nav>
             <ul>
-                <li className='active'><Link to="/">Home</Link></li>
+                <li className='active'><Link to="/home">Home</Link></li>
                 <li><Link to="/expenses">Expenses</Link></li>
                 <li><Link to="/residents">Residents</Link></li>
             </ul>

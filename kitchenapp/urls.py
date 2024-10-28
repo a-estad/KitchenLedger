@@ -25,5 +25,7 @@ router.register(r'payments', PaymentViewSet)
 router.register(r'dinnerclubparticipants', DinnerClubParticipantViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
+    path("notes/", NoteListCreate.as_view(), name="note-list"),
+    path("notes/delete/<int:pk>", NoteDelete.as_view(), name="delete-note"),
 ]
