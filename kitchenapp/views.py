@@ -39,7 +39,7 @@ class ResidentViewSet(viewsets.ModelViewSet):
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 class DinnerClubViewSet(viewsets.ModelViewSet):
     queryset = DinnerClub.objects.all()

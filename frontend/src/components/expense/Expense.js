@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Expense.css';
 import Form from './Form';
+import api from '../../api';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
@@ -16,7 +17,7 @@ const Expenses = () => {
   });
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/expenses/')
+    api.get('api/expenses/')
       .then(response => {
         const sortedData = response.data.sort((exp1, exp2) => {
           return new Date(exp2.date) - new Date(exp1.date);
@@ -48,7 +49,7 @@ const Expenses = () => {
 
   const addExpense = (e) => {
     e.preventDefault();
-    axios.post('http://127.0.0.1:8000/api/expenses/', newExpense)
+    api.post('api/expenses/', newExpense)
       .then(response => {
         setExpenses([...expenses, response.data]);
         setShowForm(false);
@@ -61,7 +62,7 @@ const Expenses = () => {
   };
 
   const deleteExpense = (id) => {
-    axios.delete(`http://127.0.0.1:8000/api/expenses/${id}/`)
+    api.delete(`api/expenses/${id}/`)
         .then(response => {
           setExpenses(expenses.filter(expense => expense.id !== id));
           setSelectedExpenseId(null)
