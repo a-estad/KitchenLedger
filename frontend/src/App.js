@@ -9,13 +9,8 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 
-function Logout() {
-  localStorage.clear()
-  return <Navigate to="/login"/>
-}
-
 function RegisterAndLogout() {
-  localStorage()
+  localStorage.clear()
   return <Register/>
 }
 

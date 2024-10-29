@@ -7,7 +7,7 @@
 }
 
 .content-of-pages {
-  padding: 40px;
+  padding: 0 40px 0 40px;
   display: block;
   flex-grow: 1;
 }

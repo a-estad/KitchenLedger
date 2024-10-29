@@ -1,17 +1,41 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState, React } from 'react';
+import { Link, useLocation, Navigate } from 'react-router-dom';
 import './Sidebar.css';
 
+function Logout() {
+  localStorage.clear()
+  return (
+    <Navigate to="/login"/>
+  )
+}
+
 const Sidebar = () => {
+  const [loggedOut, setLoggedOut] = useState(false);
+  const location = useLocation();
+
+  const handleLogout = () => {
+    setLoggedOut(true);
+  };
+
   return (
     <div className="sidebar">
-        <nav>
-            <ul>
-                <li className='active'><Link to="/home">Home</Link></li>
-                <li><Link to="/expenses">Expenses</Link></li>
-                <li><Link to="/residents">Residents</Link></li>
-            </ul>
+      {loggedOut && <Logout />}
+      <nav>
+        <ul>
+          <li>
+            <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>Home</Link>
+          </li>
+          <li>
+            <Link to="/expenses" className={location.pathname === '/expenses' ? 'active' : ''}>Expenses</Link>
+          </li>
+          <li>
+            <Link to="/residents" className={location.pathname === '/residents' ? 'active' : ''}>Residents</Link>
+          </li>
+        </ul>
       </nav>
+      <button className='logout-btn' onClick={() => handleLogout()}>
+        Logout
+      </button>
     </div>
   );
 };
