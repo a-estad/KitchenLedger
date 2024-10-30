@@ -161,3 +161,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow requests from your React app
 ]
 CORS_ALLOWS_CREDENTIALS = True # Find out what it does
+
+AUTH_USER_MODEL = 'kitchenapp.Resident'

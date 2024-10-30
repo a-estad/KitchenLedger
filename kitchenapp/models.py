@@ -1,27 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
+# class Resident(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+#     name = models.CharField(max_length=20)
+#     room_number = models.IntegerField()
+#     balance = models.FloatField()
+#     move_in_date = models.DateField()
+#     move_out_date = models.DateField()
+
+#     def __str__(self):
+#         return f"{self.room_number}: {self.name}"
+
+class Resident(AbstractUser):
+    name = models.CharField(max_length=20)
+    room_number = models.IntegerField(null=True)
+    balance = models.FloatField(null=True)
+    move_in_date = models.DateField(null=True)
+    move_out_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.room_number}: {self.name}"
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True) # Automatically populate
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey(Resident, on_delete=models.CASCADE, related_name="notes")
 
     def __str__(self):
         return self.title
-
-class Resident(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=20)
-    room_number = models.IntegerField()
-    balance = models.FloatField()
-    move_in_date = models.DateField()
-    move_out_date = models.DateField()
-
-    def __str__(self):
-        return f"{self.room_number}: {self.name}"
-
 
 class Expense(models.Model):
     paid_by = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each expense belongs to one resident
