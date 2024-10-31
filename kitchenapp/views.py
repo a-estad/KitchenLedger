@@ -37,9 +37,12 @@ class ResidentViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
 class ExpenseViewSet(viewsets.ModelViewSet):
-    queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
+    queryset = Expense.objects.all()  # Add this line to set the queryset attribute
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 class DinnerClubViewSet(viewsets.ModelViewSet):
     queryset = DinnerClub.objects.all()

@@ -35,7 +35,7 @@ class Expense(models.Model):
     paid_by = models.ForeignKey(Resident, on_delete=models.DO_NOTHING)  # Each expense belongs to one resident
     date = models.DateField()
     cost = models.FloatField()
-    is_dinner_club = models.BooleanField()
+    is_dinner_club = models.BooleanField(null=True)
     description = models.CharField(max_length=100)
 
     def __str__(self):

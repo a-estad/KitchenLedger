@@ -12,8 +12,6 @@ const Expenses = () => {
     description: '',
     cost: '',
     date: '',
-    paid_by: '',
-    is_dinner_club: false,
   });
 
   useEffect(() => {
@@ -40,10 +38,10 @@ const Expenses = () => {
 
   // Mega smart
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setNewExpense((prevExpense) => ({
       ...prevExpense,
-      [name]: type === 'checkbox' ? checked : value, // Computed Property Name
+      [name]: value, // Computed Property Name
     }));
   };
 
@@ -53,7 +51,7 @@ const Expenses = () => {
       .then(response => {
         setExpenses([...expenses, response.data]);
         setShowForm(false);
-        setNewExpense({ description: '', cost: '', date: '', paid_by: '', is_dinner_club: false });
+        setNewExpense({ description: '', cost: '', date: '' });
         console.log('Expense added successfully!');
       })
       .catch(error => {

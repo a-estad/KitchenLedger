@@ -33,17 +33,7 @@ const Form = ({addExpense, newExpense, handleInputChange}) => {
                     required
                 />
             </div>
-            <div>
-                <label>Paid by (Resident ID):</label>
-                <input
-                    type="text"
-                    name="paid_by"
-                    value={newExpense.paid_by}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div>
+            {/* <div>
                 <label>
                     Is Dinner Club:
                     <input
@@ -53,7 +43,7 @@ const Form = ({addExpense, newExpense, handleInputChange}) => {
                         onChange={handleInputChange}
                     />
                 </label>
-            </div>
+            </div> */}
 
             <button type="submit">Create Expense</button>
         </form>

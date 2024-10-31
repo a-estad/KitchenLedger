@@ -27,6 +27,11 @@ class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = '__all__'
+        read_only_fields = ['paid_by']  # Prevent 'paid_by' from being manually set in the request
+
+    def create(self, validated_data):
+        validated_data['paid_by'] = self.context['request'].user
+        return super().create(validated_data)
 
 class DinnerClubSerializer(serializers.ModelSerializer):
     class Meta:

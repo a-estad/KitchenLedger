@@ -158,7 +158,8 @@ LOGIN_REDIRECT_URL = '/kitchenapp'
 LOGOUT_REDIRECT_URL = 'login'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Allow requests from your React app
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 CORS_ALLOWS_CREDENTIALS = True # Find out what it does
 
