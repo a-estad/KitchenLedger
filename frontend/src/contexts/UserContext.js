@@ -7,6 +7,7 @@ export const useUser = () => useContext(Context);
 export const UserProvider = ({ children }) => {
   const [username, setUsername] = useState('');
 
+  // Currently not used
   return (
     <Context.Provider value={[ username, setUsername ]}>
       {children}

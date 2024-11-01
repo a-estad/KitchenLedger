@@ -1,5 +1,3 @@
-import './Expense.css';
-
 const Form = ({addExpense, newExpense, handleInputChange}) => {
     return (
         <form onSubmit={addExpense}>
@@ -33,18 +31,6 @@ const Form = ({addExpense, newExpense, handleInputChange}) => {
                     required
                 />
             </div>
-            {/* <div>
-                <label>
-                    Is Dinner Club:
-                    <input
-                        type="checkbox"
-                        name="is_dinner_club"
-                        checked={newExpense.is_dinner_club}
-                        onChange={handleInputChange}
-                    />
-                </label>
-            </div> */}
-
             <button type="submit">Create Expense</button>
         </form>
     )

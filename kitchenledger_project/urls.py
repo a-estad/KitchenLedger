@@ -17,18 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
-from kitchenapp.views import CreateUserView
+from kitchenapp.views import ResidentViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.routers import DefaultRouter
 
+
+router = DefaultRouter()
+router.register("", ResidentViewSet, basename='resident')
 
 urlpatterns = [
-    # path("", include("kitchenapp.urls")),
     path("api/", include("kitchenapp.urls")),
-    # path("accounts/", include("django.contrib.auth.urls")),
-    # path("accounts/login/", auth_views.LoginView.as_view(template_name="login.html")),
+    path('api/user/register', include(router.urls)),
     path("admin/", admin.site.urls),
-    path("api/user/register/", CreateUserView.as_view(), name="register"),
     path("api/token/", TokenObtainPairView.as_view(), name="get_token"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
-    path("api-auth/", include("rest_framework.urls")),
 ]

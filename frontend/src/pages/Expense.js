@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Expense.css';
-import Form from './Form';
-import api from '../../api';
+import '../styles/Expense.css';
+import Form from '../components/ExpenseForm';
+import api from '../api';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);

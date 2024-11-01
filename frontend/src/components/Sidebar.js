@@ -1,6 +1,6 @@
 import { useState, React } from 'react';
 import { Link, useLocation, Navigate } from 'react-router-dom';
-import './Sidebar.css';
+import '../styles/Sidebar.css';
 
 function Logout() {
   localStorage.clear()

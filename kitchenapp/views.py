@@ -26,15 +26,11 @@ class NoteDelete(generics.DestroyAPIView):
         user = self.request.user 
         return Note.objects.filter(author=user)
 
-class CreateUserView(generics.CreateAPIView):
-    queryset = Resident.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
-
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()
     serializer_class = ResidentSerializer
     permission_classes = [AllowAny]
+    authentication_classes = []      # Disables JWT authentication for this viewset
 
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
