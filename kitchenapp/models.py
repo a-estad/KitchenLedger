@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, AbstractUser
 class Resident(AbstractUser):
     name = models.CharField(max_length=20)
     room_number = models.IntegerField(null=True)
-    balance = models.FloatField(null=True)
+    balance = models.FloatField(default=0.0)
     move_in_date = models.DateField(null=True)
     move_out_date = models.DateField(null=True, blank=True)
 

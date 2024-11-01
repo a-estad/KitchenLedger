@@ -26,6 +26,7 @@ router.register(r'dinnerclubparticipants', DinnerClubParticipantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path("balances/", ResidentBalanceView.as_view(), name="residents-balance"),
     path("notes/", NoteListCreate.as_view(), name="note-list"),
     path("notes/delete/<int:pk>", NoteDelete.as_view(), name="delete-note"),
 ]

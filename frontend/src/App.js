@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
+import Debts from './pages/Debts';
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
           <Route path="/home" element={<ProtectedRoute> <Home/> </ProtectedRoute>} />
           <Route path="/expenses" element={<ProtectedRoute> <Expenses/> </ProtectedRoute> } />
           <Route path="/residents" element={<ProtectedRoute> <Residents/> </ProtectedRoute>} />
+          <Route path="/debts" element={<ProtectedRoute> <Debts/> </ProtectedRoute>} />
         </Routes>
       </div>
     </div>

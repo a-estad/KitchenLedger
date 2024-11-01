@@ -3,6 +3,9 @@ from .models import Resident, Expense, DinnerClub, Debt, Credit, Payment, Dinner
 from .serializers import *
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import Sum
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
@@ -25,6 +28,33 @@ class NoteDelete(generics.DestroyAPIView):
     def get_queryset(self): # Find difference between get_queryset and setting queryset
         user = self.request.user 
         return Note.objects.filter(author=user)
+
+class ResidentBalanceView(APIView):
+    def get(self, request):
+        residents_data = []
+
+        for resident in Resident.objects.all():
+            expensesPaidFor = Expense.objects.filter(paid_by=resident)
+            totalPaidFor = expensesPaidFor.aggregate(total=Sum('cost'))['total'] or 0.0
+
+            # Separate dinner club and non-dinner club expenses
+            nonDinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=False)
+            dinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=True)
+
+            # Calculate totals
+            nonDinnerClubTotal = nonDinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
+            dinnerClubTotal = dinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
+
+            # Populate resident data
+            residents_data.append({
+                "resident": resident.username,
+                "paidFor": totalPaidFor,
+                "non_dinner_club_total": nonDinnerClubTotal,
+                "dinner_club_total": dinnerClubTotal,
+                "balance": resident.balance,
+            })
+
+        return Response(residents_data)
 
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()
