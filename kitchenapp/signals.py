@@ -6,25 +6,29 @@ from .models import Expense, Resident, Credit, DinnerClub, DinnerClubParticipant
 @receiver(post_save, sender=Expense)
 def update_resident_balance_on_expense(sender, instance, created, **kwargs):
     resident = instance.paid_by
-    print("test")
+    residents = Resident.objects.all()
 
     if instance.is_dinner_club:
-        # Handle dinner club expenses
-        participants = DinnerClubParticipant.objects.filter(dinner_club__expense=instance)
-        per_person_cost = instance.cost / participants.count() if participants.exists() else 0
-
-        for participant in participants:
-            participant_resident = participant.resident
-            participant_resident.balance -= per_person_cost  # Deduct the dinner club cost
-            participant_resident.save()
-
-        # Add the full cost back to the resident who paid
-        resident.balance += instance.cost
+        # For dinner club expenses, get the specific participants
+        dinner_club = DinnerClub.objects.get(expense=instance)
+        dinner_club_participants = DinnerClubParticipant.objects.filter(dinner_club=dinner_club)
+        debtors = [participant.resident for participant in dinner_club_participants]
     else:
-        # Handle non-dinner club expenses
-        resident.balance += instance.cost
+        # For non-dinner club expenses, all residents are debtors
+        debtors = residents
 
+    # Calculate the per-person share of the expense
+    share = instance.cost / len(debtors)
+
+    # Subtract the share from each debtor
+    for debtor in debtors:
+        debtor.balance -= share
+        debtor.save()
+
+    # Add back the resident's share, so they only pay their portion
+    resident.balance += instance.cost - share
     resident.save()
+
 
 # Signal to update balance on credit creation
 # @receiver(post_save, sender=Credit)
@@ -37,21 +41,26 @@ def update_resident_balance_on_expense(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Expense)
 def revert_balance_on_expense_delete(sender, instance, **kwargs):
     resident = instance.paid_by
+    residents = Resident.objects.all()
 
     if instance.is_dinner_club:
-        participants = DinnerClubParticipant.objects.filter(dinner_club__expense=instance)
-        per_person_cost = instance.cost / participants.count() if participants.exists() else 0
-
-        for participant in participants:
-            participant_resident = participant.resident
-            participant_resident.balance += per_person_cost  # Add back the dinner club cost
-            participant_resident.save()
-
-        # Remove the full cost from the resident who paid
-        resident.balance -= instance.cost
+        # For dinner club expenses, get the specific participants
+        dinner_club = DinnerClub.objects.get(expense=instance)
+        dinner_club_participants = DinnerClubParticipant.objects.filter(dinner_club=dinner_club)
+        debtors = [participant.resident for participant in dinner_club_participants]
     else:
-        # For regular expenses, subtract the cost from the balance
-        resident.balance -= instance.cost
+        # For non-dinner club expenses, all residents are debtors
+        debtors = residents
 
+    # Calculate the per-person share of the expense
+    share = instance.cost / len(debtors)
+
+    # Subtract the share from each debtor
+    for debtor in debtors:
+        debtor.balance += share
+        debtor.save()
+
+    # Add back the resident's share, so they only pay their portion
+    resident.balance -= instance.cost - share
     resident.save()
 
