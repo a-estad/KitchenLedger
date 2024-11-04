@@ -25,7 +25,7 @@ class NoteDelete(generics.DestroyAPIView):
     serializer_class = NoteSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self): # Find difference between get_queryset and setting queryset
+    def get_queryset(self): # TODO: Find difference between get_queryset and setting queryset
         user = self.request.user 
         return Note.objects.filter(author=user)
 
@@ -33,25 +33,30 @@ class ResidentBalanceView(APIView):
     def get(self, request):
         residents_data = []
 
-        for resident in Resident.objects.all():
+        for resident in Resident.objects.all(): # TODO: Don't include admin
             expensesPaidFor = Expense.objects.filter(paid_by=resident)
             totalPaidFor = expensesPaidFor.aggregate(total=Sum('cost'))['total'] or 0.0
 
-            # Separate dinner club and non-dinner club expenses
             nonDinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=False)
             dinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=True)
 
-            # Calculate totals
             nonDinnerClubTotal = nonDinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
             dinnerClubTotal = dinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
 
-            # Populate resident data
+            # Serialize each type of expenses
+            debts = Debt.objects.filter(resident=resident)
+            dinnerClubDebts = debts.filter(expense__is_dinner_club=True)
+            generalExpensesDebts = debts.filter(expense__is_dinner_club=False)
+
             residents_data.append({
                 "resident": resident.username,
                 "paidFor": totalPaidFor,
-                "non_dinner_club_total": nonDinnerClubTotal,
-                "dinner_club_total": dinnerClubTotal,
+                "generalExpensesTotal": nonDinnerClubTotal,
+                "dinnerClubsTotal": dinnerClubTotal,
                 "balance": resident.balance,
+                "expensesPaidFor": ExpenseSerializer(expensesPaidFor, many=True).data,
+                "dinnerClubDebts": DebtSerializer(dinnerClubDebts, many=True).data,
+                "generalExpensesDebts": DebtSerializer(generalExpensesDebts, many=True).data,
             })
 
         return Response(residents_data)
@@ -65,7 +70,7 @@ class ResidentViewSet(viewsets.ModelViewSet):
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Expense.objects.all()  # Add this line to set the queryset attribute
+    queryset = Expense.objects.all()
 
     def perform_create(self, serializer):
         serializer.save()
