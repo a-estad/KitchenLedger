@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Debts from './pages/Debts';
+import DinnerClubs from './pages/DinnerClubs';
 
 function App() {
   const location = useLocation();
@@ -29,7 +30,7 @@ function App() {
         <Routes>
           <Route path="/home" element={<ProtectedRoute> <Home/> </ProtectedRoute>} />
           <Route path="/expenses" element={<ProtectedRoute> <Expenses/> </ProtectedRoute> } />
-          <Route path="/residents" element={<ProtectedRoute> <Residents/> </ProtectedRoute>} />
+          <Route path="/dinnerClubs" element={<ProtectedRoute> <DinnerClubs/> </ProtectedRoute>} />
           <Route path="/debts" element={<ProtectedRoute> <Debts/> </ProtectedRoute>} />
         </Routes>
       </div>

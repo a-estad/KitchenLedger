@@ -92,9 +92,9 @@ const Expenses = () => {
       <table className="coolTable">
         <thead>
           <tr>
+            <th>Date</th>
             <th>Description</th>
             <th>Cost</th>
-            <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -104,9 +104,9 @@ const Expenses = () => {
               className={selectedExpenseId === expense.id ? 'selected' : ''}
               onClick={() => handleRowClick(expense.id)}
             >
+              <td>{expense.date}</td>
               <td>{expense.description}</td>
               <td>{expense.cost} kr.</td>
-              <td>{expense.date}</td>
             </tr>
           ))}
         </tbody>

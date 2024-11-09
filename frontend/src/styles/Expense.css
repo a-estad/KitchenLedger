@@ -1,3 +1,7 @@
+.expenseContentContainer {
+    overflow: auto;
+}
+
 .addExpenseButton {
     background-color: #1d82ff;
     border: none;

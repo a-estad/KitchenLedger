@@ -35,12 +35,14 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class DinnerClubSerializer(serializers.ModelSerializer):
+    expense = ExpenseSerializer(read_only=True)
+
     class Meta:
         model = DinnerClub
         fields = '__all__'
 
 class DebtSerializer(serializers.ModelSerializer):
-    expense = ExpenseSerializer(read_only=True)  # Nest the ExpenseSerializer
+    expense = ExpenseSerializer(read_only=True)
     
     class Meta:
         model = Debt

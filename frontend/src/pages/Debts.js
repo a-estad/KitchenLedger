@@ -41,7 +41,7 @@ function ResidentBalances() {
     };
 
     return (
-        <div className="Debts-container">
+        <div className="debtsContainer">
             <h1>Debts</h1>
             <table className="coolTable">
                 <thead>
@@ -58,15 +58,15 @@ function ResidentBalances() {
                         <tr key={index}>
                             <td>{resident.resident}</td>
                             <td onClick={() => openModal(resident, "General Expenses")} style={{ cursor: 'pointer', color: 'blue' }}>
-                                {resident.generalExpensesTotal.toFixed(2)}
+                                {-resident.generalExpensesTotal.toFixed(2)}
                             </td>
                             <td onClick={() => openModal(resident, "Dinner Club Debts")} style={{ cursor: 'pointer', color: 'blue' }}>
-                                {resident.dinnerClubsTotal.toFixed(2)}
+                                {-resident.dinnerClubsTotal.toFixed(2)}
                             </td>
                             <td onClick={() => openModal(resident, "Expenses Paid For")} style={{ cursor: 'pointer', color: 'blue' }}>
                                 {resident.paidFor.toFixed(2)}
                             </td>
-                            <td>{resident.balance}</td>
+                            <td>{resident.balance.toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>

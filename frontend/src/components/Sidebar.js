@@ -29,10 +29,10 @@ const Sidebar = () => {
             <Link to="/expenses" className={location.pathname === '/expenses' ? 'active' : ''}>Expenses</Link>
           </li>
           <li>
-            <Link to="/debts" className={location.pathname === '/debts' ? 'active' : ''}>Debts</Link>
+            <Link to="/dinnerClubs" className={location.pathname === '/dinnerClubs' ? 'active' : ''}>Dinner Clubs</Link>
           </li>
           <li>
-            <Link to="/residents" className={location.pathname === '/residents' ? 'active' : ''}>Residents</Link>
+            <Link to="/debts" className={location.pathname === '/debts' ? 'active' : ''}>Debts</Link>
           </li>
         </ul>
       </nav>
