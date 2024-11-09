@@ -40,6 +40,8 @@ class DinnerClubSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class DebtSerializer(serializers.ModelSerializer):
+    expense = ExpenseSerializer(read_only=True)  # Nest the ExpenseSerializer
+    
     class Meta:
         model = Debt
         fields = '__all__'

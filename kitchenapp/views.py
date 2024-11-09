@@ -37,21 +37,18 @@ class ResidentBalanceView(APIView):
             expensesPaidFor = Expense.objects.filter(paid_by=resident)
             totalPaidFor = expensesPaidFor.aggregate(total=Sum('cost'))['total'] or 0.0
 
-            nonDinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=False)
-            dinnerClubExpenses = Expense.objects.filter(paid_by=resident, is_dinner_club=True)
-
-            nonDinnerClubTotal = nonDinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
-            dinnerClubTotal = dinnerClubExpenses.aggregate(total=Sum('cost'))['total'] or 0.0
-
             # Serialize each type of expenses
             debts = Debt.objects.filter(resident=resident)
             dinnerClubDebts = debts.filter(expense__is_dinner_club=True)
             generalExpensesDebts = debts.filter(expense__is_dinner_club=False)
 
+            generalExpensesTotal = generalExpensesDebts.aggregate(total=Sum('amount'))['total'] or 0.0
+            dinnerClubTotal = dinnerClubDebts.aggregate(total=Sum('amount'))['total'] or 0.0
+
             residents_data.append({
                 "resident": resident.username,
                 "paidFor": totalPaidFor,
-                "generalExpensesTotal": nonDinnerClubTotal,
+                "generalExpensesTotal": generalExpensesTotal,
                 "dinnerClubsTotal": dinnerClubTotal,
                 "balance": resident.balance,
                 "expensesPaidFor": ExpenseSerializer(expensesPaidFor, many=True).data,
