@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Expense.css';
+import '../styles/Table.css';
 import Form from '../components/ExpenseForm';
 import api from '../api';
 
@@ -71,7 +72,7 @@ const Expenses = () => {
   }
 
   return (
-    <div className="expense-table-container">
+    <div className="expenseContentContainer">
       <h1>Expenses</h1>
       <button className="addExpenseButton" onClick={() => setShowForm(!showForm)}>
           Add expense
@@ -88,7 +89,7 @@ const Expenses = () => {
           </button>
       )}
 
-      <table className="expense-table">
+      <table className="coolTable">
         <thead>
           <tr>
             <th>Description</th>

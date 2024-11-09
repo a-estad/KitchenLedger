@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 import Modal from 'react-modal';
+import '../styles/Debts.css';
+import '../styles/Table.css';
 
 // Make sure to set the root element for accessibility
 Modal.setAppElement('#root');
@@ -41,7 +43,7 @@ function ResidentBalances() {
     return (
         <div className="Debts-container">
             <h1>Debts</h1>
-            <table>
+            <table className="coolTable">
                 <thead>
                     <tr>
                         <th>Resident</th>
@@ -74,27 +76,13 @@ function ResidentBalances() {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel={selectedColumn}
-                // TODO: Put styles in a css file
-                style={{
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '500px',
-                        padding: '20px',
-                    },
-                    overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.75)'
-                    }
-                }}
+                className="modal-content"
+                overlayClassName="modal-overlay"
             >
                 {console.log(selectedResident)}
                 <h2>{selectedColumn} for {selectedResident?.resident}</h2>
                 {selectedResident && selectedColumn === "General Expenses" && selectedResident.generalExpensesDebts.length != 0 ? (
-                    <table>
+                    <table className="coolTable">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -115,7 +103,7 @@ function ResidentBalances() {
                         </tbody>
                     </table>
                 ) : selectedColumn === "Expenses Paid For" && selectedResident.expensesPaidFor.length !== 0 ? (
-                    <table>
+                    <table className="coolTable">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -136,7 +124,7 @@ function ResidentBalances() {
                         </tbody>
                     </table>
                 ) : selectedColumn === "Dinner Club Debts" && selectedResident.dinnerClubDebts.length !== 0 ? (
-                    <table>
+                    <table className="coolTable">
                         <thead>
                             <tr>
                                 <th>Date</th>

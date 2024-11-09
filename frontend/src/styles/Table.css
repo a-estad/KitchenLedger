@@ -1,0 +1,38 @@
+.coolTable {
+    border-collapse: collapse;
+    font-family: sans-serif;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.coolTable thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.coolTable th,
+.coolTable td {
+    padding: 12px 15px;
+}
+
+.coolTable tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.coolTable tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.coolTable tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.coolTable tbody tr.selected {
+    /* font-weight: bold; */
+    background-color: rgb(185, 185, 185);
+}
+
+.coolTable-container button {
+    min-width: 145px;
+}
