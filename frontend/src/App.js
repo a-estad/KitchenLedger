@@ -2,14 +2,13 @@ import React from 'react';
 import './App.css'
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import Expenses from './pages/Expense';
-import Residents from './pages/Residents';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Debts from './pages/Debts';
 import DinnerClubs from './pages/DinnerClubs';
+import GeneralExpenses from './pages/GeneralExpense';
 
 function App() {
   const location = useLocation();
@@ -29,7 +28,7 @@ function App() {
       <div className='content-of-pages'>
         <Routes>
           <Route path="/home" element={<ProtectedRoute> <Home/> </ProtectedRoute>} />
-          <Route path="/expenses" element={<ProtectedRoute> <Expenses/> </ProtectedRoute> } />
+          <Route path="/expenses" element={<ProtectedRoute> <GeneralExpenses/> </ProtectedRoute> } />
           <Route path="/dinnerClubs" element={<ProtectedRoute> <DinnerClubs/> </ProtectedRoute>} />
           <Route path="/debts" element={<ProtectedRoute> <Debts/> </ProtectedRoute>} />
         </Routes>

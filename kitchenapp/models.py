@@ -32,7 +32,7 @@ class Expense(models.Model):
 
 
 class DinnerClub(models.Model):
-    expense = models.OneToOneField(Expense, on_delete=models.CASCADE)  # Each DinnerClub has one expense
+    expense = models.OneToOneField(Expense, on_delete=models.DO_NOTHING)  # Each DinnerClub has one expense
     participants = models.ManyToManyField(Resident, through='DinnerClubParticipant')  # Many-to-many with residents
 
     def __str__(self):

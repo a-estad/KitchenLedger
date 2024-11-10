@@ -67,10 +67,20 @@ class ResidentViewSet(viewsets.ModelViewSet):
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Expense.objects.all()
+    queryset = Expense.objects.filter(is_dinner_club=False)
 
     def perform_create(self, serializer):
         serializer.save()
+    
+    def destroy(self, request, *args, **kwargs):
+        expense = self.get_object()
+        # Only allow dinnerclubs to delete dinnerclubs
+        if DinnerClub.objects.filter(expense=expense).exists():
+            return Response(
+                {"detail": "Cannot delete an expense that is part of a dinner club."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return super().destroy(request, *args, **kwargs)
 
 class DinnerClubViewSet(viewsets.ModelViewSet):
     queryset = DinnerClub.objects.all()

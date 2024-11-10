@@ -136,9 +136,9 @@ function ResidentBalances() {
                         <tbody>
                             {selectedResident.dinnerClubDebts.map((debt, index) => (
                                 <tr key={index}>
-                                    <td>{debt.expense_date}</td>
-                                    <td>{debt.description}</td>
-                                    <td>{debt.cost.toFixed(2)}</td>
+                                    <td>{debt.expense.date}</td>
+                                    <td>{debt.expense.description}</td>
+                                    <td>{debt.expense.cost.toFixed(2)}</td>
                                     <td>{debt.amount.toFixed(2)}</td>
                                 </tr>
                             ))}

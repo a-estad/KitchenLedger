@@ -4,7 +4,7 @@ import '../styles/Table.css';
 import Form from '../components/ExpenseForm';
 import api from '../api';
 
-const Expenses = () => {
+const GeneralExpenses = () => {
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenseId, setSelectedExpenseId] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -49,6 +49,7 @@ const Expenses = () => {
     e.preventDefault();
     api.post('api/expenses/', newExpense)
       .then(response => {
+        console.log(response.data)
         setExpenses([...expenses, response.data]);
         setShowForm(false);
         setNewExpense({ description: '', cost: '', date: '' });
@@ -115,4 +116,4 @@ const Expenses = () => {
   );
 };
 
-export default Expenses;
+export default GeneralExpenses;

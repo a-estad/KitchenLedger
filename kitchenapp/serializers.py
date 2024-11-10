@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from kitchenapp.signals import adjust_balances_for_dinner_club
 from .models import *
 from django.contrib.auth.models import User
 
@@ -35,10 +37,44 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class DinnerClubSerializer(serializers.ModelSerializer):
-    expense = ExpenseSerializer(read_only=True)
+    id = serializers.IntegerField(read_only=True)
+    expense = ExpenseSerializer()
+    participants = ResidentSerializer(source='participants.all', many=True, read_only=True)  # Add participants
+
+    participantsRoomNumbers = serializers.ListField(
+        child=serializers.CharField(), write_only=True
+    )
 
     class Meta:
         model = DinnerClub
+        fields = ['id', 'expense', 'participantsRoomNumbers', 'participants']
+
+    def create(self, validated_data):
+        expense_data = validated_data.pop('expense')
+        room_numbers = validated_data.pop('participantsRoomNumbers')
+
+        participants = Resident.objects.all()
+        # participants = Resident.objects.filter(room_number__in=room_numbers)
+        # TODO: Check that the resident that paid is also in room_numbers
+        # if participants.count() != len(room_numbers):
+        #     raise serializers.ValidationError("One or more room numbers are invalid.")
+
+        expense_serializer = ExpenseSerializer(data=expense_data, context=self.context)
+        expense_serializer.is_valid(raise_exception=True)
+        expense = expense_serializer.save()  # This will set 'paid_by' to the current user
+
+        dinner_club = DinnerClub.objects.create(expense=expense)
+
+        for resident in participants:
+            DinnerClubParticipant.objects.create(dinner_club=dinner_club, resident=resident)
+
+        # dinner_club.participants.set(participants)
+        adjust_balances_for_dinner_club(expense=expense, operation='add')
+        return dinner_club
+
+class DinnerClubParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DinnerClubParticipant
         fields = '__all__'
 
 class DebtSerializer(serializers.ModelSerializer):
@@ -58,7 +94,4 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = '__all__'
 
-class DinnerClubParticipantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DinnerClubParticipant
-        fields = '__all__'
+

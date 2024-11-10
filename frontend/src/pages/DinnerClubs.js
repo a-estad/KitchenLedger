@@ -5,8 +5,14 @@ import '../styles/Table.css';
 
 function DinnerClubs() {
     const [dinnerClubs, setDinnerClubs] = useState([]);
-    const [newDinnerclub, setNewDinnerClub] = useState([]);
+    const [newDinnerclub, setNewDinnerClub] = useState({
+        description: '',
+        cost: '',
+        date: '',
+        roomNumbers: '',
+    });
     const [showForm, setShowForm] = useState(false);
+    const [selectedDinnerclubId, setSelectedDinnerclubId] = useState(null);
 
 
     useEffect(() => {
@@ -23,6 +29,15 @@ function DinnerClubs() {
           });
       }, []);
 
+    const handleRowClick = (dinnerclubId) => {
+        if(dinnerclubId == selectedDinnerclubId) {
+            setSelectedDinnerclubId(null);
+        } else {
+            setSelectedDinnerclubId(dinnerclubId);
+        }
+        console.log(selectedDinnerclubId);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewDinnerClub((prevDinnerClub) => ({
@@ -31,18 +46,50 @@ function DinnerClubs() {
         }));
     };
 
-    const addDinnerclub = (e) => {
+    const deleteDinnerclub = (id) => {
+        api.delete(`api/dinnerclubs/${id}/`)
+            .then(response => {
+              setDinnerClubs(dinnerClubs.filter(dinnerClubs => dinnerClubs.id !== id));
+              setSelectedDinnerclubId(null)
+              console.log('Dinnerclub deleted successfully');
+            })
+            .catch(error => {
+              console.error('Error deleting Dinnerclub:', error);
+            });
+      }
+
+    const addDinnerclub = async (e) => {
         e.preventDefault();
-        api.post('api/dinnerclubs/', newDinnerclub)
-          .then(response => {
+
+        // Convert comma-separated room numbers into an array
+        const participantsRoomNumbers = newDinnerclub.roomNumbers
+            .split(',')
+            .map(room => room.trim())
+            .filter(room => room !== '');
+
+        const data = {
+            expense: {
+                description: newDinnerclub.description,
+                cost: newDinnerclub.cost,
+                date: newDinnerclub.date,
+                is_dinner_club: true,
+            },
+            participantsRoomNumbers: participantsRoomNumbers,
+        };
+
+        try {
+            const response = await api.post('/api/dinnerclubs/', data);
             setDinnerClubs([...dinnerClubs, response.data]);
-            setShowForm(false);
-            // setNewExpense({ description: '', cost: '', date: '' });
-            console.log('Dinnerclub added successfully!');
-          })
-          .catch(error => {
-            console.error('Error adding expense:', error);
-          });
+            console.log('DinnerClub created:', response.data);
+            setNewDinnerClub({
+                description: '',
+                cost: '',
+                date: '',
+                roomNumbers: '',
+            });
+        } catch (error) {
+            console.error('Error creating DinnerClub:', error);
+        }
       };
 
     return (
@@ -58,6 +105,11 @@ function DinnerClubs() {
                 handleInputChange = {handleInputChange}
                 />
             }
+            {selectedDinnerclubId !== null && (
+                <button onClick={() => deleteDinnerclub(selectedDinnerclubId)}>
+                    Delete dinnerclub
+                </button>
+            )}
             <table className="coolTable">
                 <thead>
                     <tr>
@@ -68,14 +120,16 @@ function DinnerClubs() {
                     </tr>
                 </thead>
                 <tbody>
-                {dinnerClubs.map((dinnerClub, index) => (
+                {dinnerClubs.map((dinnerClub) => (
                 <tr
-                    key={index}
+                    key={dinnerClub.id}
+                    className={selectedDinnerclubId === dinnerClub.id ? 'selected' : ''}
+                    onClick={() => handleRowClick(dinnerClub.id)}
                 >
-                    <td>{dinnerClub.date}</td>
-                    <td>{dinnerClub.description}</td>
-                    <td>{dinnerClub.cost} kr.</td>
-                    <td>{dinnerClub.numberOfParticipants}</td>
+                    <td>{dinnerClub.expense.date}</td>
+                    <td>{dinnerClub.expense.description}</td>
+                    <td>{dinnerClub.participants.length}</td>
+                    <td>{dinnerClub.expense.cost} kr</td>
                 </tr>
                 ))}
                 </tbody>

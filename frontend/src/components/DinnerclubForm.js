@@ -31,6 +31,17 @@ const Form = ({addDinnerclub, newDinnerclub, handleInputChange}) => {
                     required
                 />
             </div>
+            <div>
+                <label>Room Numbers (comma-separated):</label>
+                <input
+                    type="text"
+                    name="roomNumbers"
+                    value={newDinnerclub.roomNumbers}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 201, 202, 203"
+                    required
+                />
+            </div>
             <button type="submit">Create Dinnerclub</button>
         </form>
     )
